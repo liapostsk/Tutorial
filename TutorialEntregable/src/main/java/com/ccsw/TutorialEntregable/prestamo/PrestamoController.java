@@ -11,7 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 /**
@@ -43,50 +43,12 @@ public class PrestamoController {
     @Operation(summary = "Find Page with Filters", description = "Method that returns a page of filtered Prestamos")
     @RequestMapping(path = "", method = RequestMethod.POST)
     public Page<PrestamoDto> findPageWithFilters(@RequestParam(value = "nameGame", required = false) String nameGame, @RequestParam(value = "nameClient", required = false) String nameClient,
-            @RequestParam(value = "iniDate", required = false) LocalDate iniDate, @RequestParam(value = "endDate", required = false) LocalDate endDate, @RequestBody PrestamoSearchDto dto) {
+            @RequestParam(value = "iniDate", required = false) Date iniDate, @RequestParam(value = "endDate", required = false) Date endDate, @RequestBody PrestamoSearchDto dto) {
         // Llamada al servicio, se encarga de devolver una pagina filtrada
         Page<Prestamo> page = this.prestamoService.findPageWithFilters(nameGame, nameClient, iniDate, endDate, dto);
-
         // Hemos de devolver Page<PrestamoDto> traducimos para cada entity Prestamo a PrestamoDto
         return new PageImpl<>(page.getContent().stream().map(e -> mapper.map(e, PrestamoDto.class)).collect(Collectors.toList()), page.getPageable(), page.getTotalElements());
     }
-
-    /**
-     * Método para recuperar un listado paginado de {@link Prestamo}
-     *
-     * @param dto dto de búsqueda
-     * @return {@link Prestamo} de {@link PrestamoDto}
-     */
-    /*
-    @Operation(summary = "Find Page", description = "Method that return a page of Prestamos")
-    @RequestMapping(path = "", method = RequestMethod.POST)
-    public Page<PrestamoDto> findPage(@RequestBody PrestamoSearchDto dto) {
-        Page<Prestamo> page = this.prestamoService.findPage(dto);
-        return new PageImpl<>(page.getContent().stream().map(e -> mapper.map(e, PrestamoDto.class)).collect(Collectors.toList()), page.getPageable(), page.getTotalElements());
-    }
-    */
-
-    //Listado Filtrado
-
-    /**
-     * Método para recuperar una lista de {@link Prestamo}
-     *
-     * @param nameGame nombre del juego
-     * @param nameClient nombre del cliente
-     * @param iniDate fecha de inicio del prestamo
-     * @param endDate fecha de fin del prestamo
-     * @return {@link List} de {@link PrestamoDto}
-     */
-    /*
-    @Operation(summary = "Find", description = "Method that return a filtered list of Prestamos")
-    @RequestMapping(path = "", method = RequestMethod.GET)
-    public List<PrestamoDto> find(@RequestParam(value = "nameGame", required = false) String nameGame, @RequestParam(value = "nameClient", required = false) String nameClient,
-            @RequestParam(value = "iniDate", required = false) LocalDate iniDate, @RequestParam(value = "endDate", required = false) LocalDate endDate) {
-        List<Prestamo> prestamos = prestamoService.find(nameGame, nameClient, iniDate, endDate);
-
-        return prestamos.stream().map(e -> mapper.map(e, PrestamoDto.class)).collect(Collectors.toList());
-    }
-    */
 
     /**
      * Método para crear o actualizar un {@link Prestamo}

@@ -93,8 +93,6 @@ export class PrestamoListComponent implements OnInit {
 
         this.prestamoService.getPrestamos(pageable, nameGame, nameClient, iniDate, endDate).subscribe(data => {
             this.dataSource.data = data.content;
-
-            console.log(data.content);
             this.pageNumber = data.pageable.pageNumber;
             this.pageSize = data.pageable.pageSize;
             this.totalElements = data.totalElements;

@@ -57,13 +57,13 @@
         </ng-container>
 
         <ng-container matColumnDef="iniDate">
-            <mat-header-cell *matHeaderCellDef> Fecha inicio  </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.iniDate}} </mat-cell>
+            <mat-header-cell *matHeaderCellDef> Fecha inicio </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.iniDate | date: 'dd/MM/yyyy'}} </mat-cell>
         </ng-container>
-
+        
         <ng-container matColumnDef="endDate">
-            <mat-header-cell *matHeaderCellDef> Fecha fin  </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.endDate}} </mat-cell>
+            <mat-header-cell *matHeaderCellDef> Fecha fin </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.endDate | date: 'dd/MM/yyyy'}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="action">

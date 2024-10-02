@@ -5,7 +5,7 @@ import com.ccsw.TutorialEntregable.prestamo.model.Prestamo;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public class PrestamoSpecification implements Specification<Prestamo> {
@@ -21,8 +21,7 @@ public class PrestamoSpecification implements Specification<Prestamo> {
 
     @Override
     public Predicate toPredicate(Root<Prestamo> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-        //Operación de =
-        //Si la operacion es de = i el valor es diferente de null
+        // Operación de "="
         if (criteria.getOperation().equalsIgnoreCase(":") && criteria.getValue() != null) {
             Path<String> path = getPath(root);
             if (path.getJavaType() == String.class) {
@@ -32,7 +31,7 @@ public class PrestamoSpecification implements Specification<Prestamo> {
             }
         } else if (criteria.getOperation().equalsIgnoreCase("between") && criteria.getValue() instanceof List) {
             // Filtrado por rango de fechas
-            List<LocalDate> dates = (List<LocalDate>) criteria.getValue();
+            List<Date> dates = (List<Date>) criteria.getValue();
             return builder.and(builder.greaterThanOrEqualTo(root.get("iniDate"), dates.get(0)), builder.lessThanOrEqualTo(root.get("endDate"), dates.get(1)));
         }
         return null;

@@ -27,11 +27,13 @@ export class PrestamoEditComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+
         if (this.data.prestamo != null) {
             this.prestamo = Object.assign({}, this.data.prestamo);
-        }
-        else {
+        } else {
             this.prestamo = new Prestamo();
+            this.prestamo.iniDate = new Date(); // O establece una fecha predeterminada
+            this.prestamo.endDate = new Date(); // O establece una fecha predeterminada
         }
 
         this.gameService.getGames().subscribe(
@@ -44,6 +46,10 @@ export class PrestamoEditComponent implements OnInit {
     }
 
     onSave() {
+        // Convertir a UTC si es necesario
+        this.prestamo.iniDate = new Date(this.prestamo.iniDate.getTime() - this.prestamo.iniDate.getTimezoneOffset() * 60000);
+        this.prestamo.endDate = new Date(this.prestamo.endDate.getTime() - this.prestamo.endDate.getTimezoneOffset() * 60000);
+
         this.prestamoService.savePrestamo(this.prestamo).subscribe(result =>  {
             this.dialogRef.close();
         }); 

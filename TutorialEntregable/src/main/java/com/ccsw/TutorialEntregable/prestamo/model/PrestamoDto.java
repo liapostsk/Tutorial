@@ -3,7 +3,7 @@ package com.ccsw.TutorialEntregable.prestamo.model;
 import com.ccsw.TutorialEntregable.client.model.ClientDto;
 import com.ccsw.TutorialEntregable.game.model.GameDto;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * @author ccsw
@@ -17,9 +17,9 @@ public class PrestamoDto {
 
     private ClientDto client;
 
-    private LocalDate iniDate;
+    private Date iniDate;
 
-    private LocalDate endDate;
+    private Date endDate;
 
     /**
      * @return id
@@ -72,7 +72,7 @@ public class PrestamoDto {
     /**
      * @return iniDate
      */
-    public LocalDate getIniDate() {
+    public Date getIniDate() {
 
         return this.iniDate;
     }
@@ -80,7 +80,7 @@ public class PrestamoDto {
     /**
      * @param iniDate new value of {@link #getIniDate}.
      */
-    public void setIniDate(LocalDate iniDate) {
+    public void setIniDate(Date iniDate) {
 
         this.iniDate = iniDate;
     }
@@ -88,7 +88,7 @@ public class PrestamoDto {
     /**
      * @return endDate
      */
-    public LocalDate getEndDate() {
+    public Date getEndDate() {
 
         return this.endDate;
     }
@@ -96,7 +96,7 @@ public class PrestamoDto {
     /**
      * @param endDate new value of {@link #getEndDate}.
      */
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(Date endDate) {
 
         this.endDate = endDate;
     }

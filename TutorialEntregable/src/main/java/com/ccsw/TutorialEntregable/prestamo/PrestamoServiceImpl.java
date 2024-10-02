@@ -13,8 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -31,45 +30,12 @@ public class PrestamoServiceImpl implements PrestamoService {
     ClientService clientService;
 
     @Override
-    public Page<Prestamo> findPage(PrestamoSearchDto dto) {
-        return this.prestamoRepository.findAll(dto.getPageable().getPageable());
-    }
-
-    //LISTA FILTRADA
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Prestamo> find(String nameGame, String nameClient, LocalDate iniDate, LocalDate endDate) {
-        //Especificaciones para los criterios de búsqueda
-        Specification<Prestamo> spec = Specification.where(null);
-
-        if (nameGame != null) {
-            PrestamoSpecification gameSpec = new PrestamoSpecification(new SearchCriteria("game.title", ":", nameGame));
-            spec = spec.and(gameSpec);
-        }
-
-        if (nameClient != null) {
-            PrestamoSpecification clientSpec = new PrestamoSpecification(new SearchCriteria("client.name", ":", nameClient));
-            spec = spec.and(clientSpec);
-        }
-
-        if (iniDate != null && endDate != null) {
-            PrestamoSpecification dateRangeSpec = new PrestamoSpecification(new SearchCriteria("iniDate", "between", List.of(iniDate, endDate)));
-            spec = spec.and(dateRangeSpec);
-        }
-
-        return this.prestamoRepository.findAll(spec);
-    }
-
-    @Override
-    public Page<Prestamo> findPageWithFilters(String nameGame, String nameClient, LocalDate iniDate, LocalDate endDate, PrestamoSearchDto dto) {
+    public Page<Prestamo> findPageWithFilters(String nameGame, String nameClient, Date iniDate, Date endDate, PrestamoSearchDto dto) {
         // Especificaciones para los criterios de búsqueda, a null por si no tenemos ninguno de ellos
         Specification<Prestamo> spec = Specification.where(null);
 
         if (nameGame != null) {
-            //Se define el criterio de busqueda que se define por SearchCriterai(key, operation, param)
+            // Se define el criterio de busqueda que se define por SearchCriteria(key, operation, param)
             PrestamoSpecification gameSpec = new PrestamoSpecification(new SearchCriteria("game.title", ":", nameGame));
             spec = spec.and(gameSpec);
         }
@@ -89,28 +55,28 @@ public class PrestamoServiceImpl implements PrestamoService {
     }
 
     // Método para verificar si dos rangos de fechas se solapan
-    private boolean datesOverlap(LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2) {
-        return !start1.isAfter(end2) && !end1.isBefore(start2);
+    private boolean datesOverlap(Date start1, Date end1, Date start2, Date end2) {
+        return !(start1.after(end2) || end1.before(start2));
     }
 
     public void save(Long id, PrestamoDto data) {
         Prestamo prestamo;
-        LocalDate iniDate = data.getIniDate();
-        LocalDate endDate = data.getEndDate();
+        Date iniDate = data.getIniDate();
+        Date endDate = data.getEndDate();
 
-        long daysBetween = ChronoUnit.DAYS.between(iniDate, endDate);
+        long daysBetween = (endDate.getTime() - iniDate.getTime()) / (1000 * 60 * 60 * 24); // Calcular días entre fechas
 
         //  1. iniDate < endDate
-        if (endDate.isBefore(iniDate)) {
-            throw new IllegalArgumentException("La data de fin no puede ser anterior a la fecha de inicio");
+        if (endDate.before(iniDate)) {
+            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio");
         }
 
         // 2. Dias de prestamo <= 14
         if (daysBetween > 14) {
-            throw new IllegalArgumentException("El prestamo no puede superar los 14 dias");
+            throw new IllegalArgumentException("El préstamo no puede superar los 14 días");
         }
 
-        //  3. Dos clientes no pueden tener el mismo juego prestado, en = rango de fechas
+        //  3. Dos clientes no pueden tener el mismo juego prestado en el mismo rango de fechas
         // Recuperar todos los préstamos para las validaciones
         Iterable<Prestamo> allPrestamos = prestamoRepository.findAll();
 
@@ -123,8 +89,8 @@ public class PrestamoServiceImpl implements PrestamoService {
         // 4. Validar que el mismo cliente no tenga más de 2 juegos prestados en el mismo rango de fechas
         int prestamosDelCliente = 0;
         for (Prestamo p : allPrestamos) {
-            LocalDate pIniDate = p.getIniDate();
-            LocalDate pEndDate = p.getEndDate();
+            Date pIniDate = p.getIniDate();
+            Date pEndDate = p.getEndDate();
             if (p.getClient().getId().equals(data.getClient().getId()) && datesOverlap(pIniDate, pEndDate, iniDate, endDate)) {
                 prestamosDelCliente++;
                 if (prestamosDelCliente >= 2) {
@@ -147,8 +113,10 @@ public class PrestamoServiceImpl implements PrestamoService {
 
     public void delete(Long id) throws Exception {
         if (this.prestamoRepository.findById(id).orElse(null) == null) {
-            throw new Exception("Not exists");
-        } else
+            throw new Exception("No existe");
+        } else {
             this.prestamoRepository.deleteById(id);
+        }
     }
 }
+

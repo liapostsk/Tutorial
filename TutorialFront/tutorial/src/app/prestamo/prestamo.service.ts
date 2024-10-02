@@ -13,16 +13,6 @@ export class PrestamoService {
     constructor(
         private http: HttpClient
     ) { }
-
-    /*
-    getPrestamosPage(pageable: Pageable): Observable<PrestamoPage> {
-        return this.http.post<PrestamoPage>('http://localhost:8080/prestamo', {pageable:pageable});
-    }
-
-    getPrestamosFiltrado(nameGame?: String, nameClient?: string, iniDate?: Date, endDate?: Date): Observable<Prestamo[]> {            
-        return this.http.get<Prestamo[]>(this.composeFindUrl(nameGame, nameClient, iniDate, endDate));
-    }
-    */
     
     getPrestamos(pageable: Pageable, nameGame?: String, nameClient?: string, iniDate?: Date, endDate?: Date): Observable<PrestamoPage> {
         // Componer la URL con los filtros

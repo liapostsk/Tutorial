@@ -4,7 +4,7 @@ import com.ccsw.TutorialEntregable.client.model.Client;
 import com.ccsw.TutorialEntregable.game.model.Game;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "prestamo")
@@ -25,12 +25,12 @@ public class Prestamo {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
-    // Guardar las fechas como LocalDate
+    // Guardar las fechas como Date
     @Column(name = "ini_date", nullable = false)
-    private LocalDate iniDate;
+    private Date iniDate;
 
     @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
+    private Date endDate;
 
     // Getters y setters
 
@@ -58,19 +58,19 @@ public class Prestamo {
         this.client = client;
     }
 
-    public LocalDate getIniDate() {
+    public Date getIniDate() {
         return this.iniDate;
     }
 
-    public void setIniDate(LocalDate iniDate) {
+    public void setIniDate(Date iniDate) {
         this.iniDate = iniDate;
     }
 
-    public LocalDate getEndDate() {
+    public Date getEndDate() {
         return this.endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 }

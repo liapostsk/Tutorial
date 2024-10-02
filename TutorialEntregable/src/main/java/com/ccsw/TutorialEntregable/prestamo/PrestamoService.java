@@ -5,27 +5,9 @@ import com.ccsw.TutorialEntregable.prestamo.model.PrestamoDto;
 import com.ccsw.TutorialEntregable.prestamo.model.PrestamoSearchDto;
 import org.springframework.data.domain.Page;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.util.Date;
 
 public interface PrestamoService {
-
-    /**
-     * Recupera los juegos filtrando opcionalmente por título y/o categoría
-     *
-     * @param nameGame nombre del juego
-     * @param nameClient nombre del cliente
-     * @return {@link List} de {@link Prestamo}
-     */
-    List<Prestamo> find(String nameGame, String nameClient, LocalDate iniDate, LocalDate endDate);
-
-    /**
-     * Método para recuperar un listado paginado de {@link Prestamo}
-     *
-     * @param dto dto de búsqueda
-     * @return {@link Page} de {@link Prestamo}
-     */
-    Page<Prestamo> findPage(PrestamoSearchDto dto);
 
     /**
      *
@@ -36,7 +18,7 @@ public interface PrestamoService {
      * @param dto dto de la búsqueda
      * @return {@link Page} de {@link Prestamo}
      */
-    Page<Prestamo> findPageWithFilters(String nameGame, String nameClient, LocalDate iniDate, LocalDate endDate, PrestamoSearchDto dto);
+    Page<Prestamo> findPageWithFilters(String nameGame, String nameClient, Date iniDate, Date endDate, PrestamoSearchDto dto);
 
     /**
      * Método para crear o actualizar un {@link Prestamo}
