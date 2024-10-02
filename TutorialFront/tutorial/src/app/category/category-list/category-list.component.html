@@ -1,0 +1,36 @@
+<div class="container">
+    <h1>Listado de Categorías</h1>
+    <!-- Creamos la tabla, con variabe dataSource def(.ts) -->
+    <mat-table [dataSource]="dataSource">
+        <!-- definición de la primera col, su cabecera y el dato que la contiene -->
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef> Identificador </mat-header-cell> 
+            <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+        </ng-container>
+        <!-- segunda col... -->
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Nombre categoría  </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+        </ng-container>
+        <!-- tercera col... + botones de acción -->
+        <ng-container matColumnDef="action">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button mat-icon-button color="primary" (click)="editCategory(element)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="accent" (click)="deleteCategory(element)">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <!-- construcción de la cabecera y filas -->
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <div class="buttons">
+        <!-- evento: click, invocación método createCategory -->
+        <button mat-flat-button color="primary" (click)="createCategory()">Nueva categoría</button>
+    </div>   
+</div>

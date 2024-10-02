@@ -1,0 +1,49 @@
+<div class="container">
+    <h1 *ngIf="prestamo.id == null">Crear autor</h1>
+    <h1 *ngIf="prestamo.id != null">Modificar autor</h1>
+
+    <form>
+        <mat-form-field>
+            <mat-label>Identificador</mat-label>
+            <input type="text" matInput placeholder="Identificador" [(ngModel)]="prestamo.id" name="id" disabled>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Nombre del juego</mat-label>
+            <mat-select disableRipple [(ngModel)]="prestamo.game" name="game" required>
+                <mat-option *ngFor="let game of games" [value]="game">{{game.title}}</mat-option>
+            </mat-select>
+            <mat-error>La categoría no puede estar vacía</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Nombre del cliente</mat-label>
+            <mat-select disableRipple [(ngModel)]="prestamo.client" name="client" required>
+                <mat-option *ngFor="let client of clients" [value]="client">{{client.name}}</mat-option>
+            </mat-select>
+            <mat-error>El nombre del cliente no puede estar vacío</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Fecha inicio</mat-label>
+            <input matInput [matDatepicker]="iniDatePicker" placeholder="Fecha Inicial" [(ngModel)]="prestamo.iniDate" name="iniDate" required>
+            <mat-datepicker-toggle matSuffix [for]="iniDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #iniDatePicker></mat-datepicker>
+            <mat-error>La fecha de inicio no puede estar vacía</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Fecha fin</mat-label>
+            <input matInput [matDatepicker]="endDatePicker" placeholder="Fecha Final" [(ngModel)]="prestamo.endDate" name="endDate" required>
+            <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #endDatePicker></mat-datepicker>
+            <mat-error>La fecha de fin no puede estar vacía</mat-error>
+        </mat-form-field>
+
+    </form>
+
+    <div class="buttons">
+        <button mat-stroked-button (click)="onClose()">Cerrar</button>
+        <button mat-flat-button color="primary" (click)="onSave()">Guardar</button>
+    </div>
+</div>

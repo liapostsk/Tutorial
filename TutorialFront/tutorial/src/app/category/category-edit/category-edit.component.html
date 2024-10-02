@@ -1,0 +1,24 @@
+<div class="container">
+    <!-- Se muestran distintos encabezados si categoria tiene id y sino tiene -->
+    <h1 *ngIf="category.id == null">Crear categoría</h1> 
+    <h1 *ngIf="category.id != null">Modificar categoría</h1>
+    <form>
+        <mat-form-field>
+            <mat-label>Identificador</mat-label>
+            <!-- [(ngModel)] =="category.id":  coge el id de la categoria "binding" y esta desactivado el campo, porque no se ha de editar es el ID-->
+            <input type="text" matInput placeholder="Identificador" [(ngModel)]="category.id" name="id" disabled>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Nombre</mat-label>
+            <!-- required: indica que el campo es obligatorio y sino se pone es mat-error -->
+            <input type="text" matInput placeholder="Nombre de categoría" [(ngModel)]="category.name" name="name" required>
+            <mat-error>El nombre no puede estar vacío</mat-error>
+        </mat-form-field>
+    </form>
+
+    <div class="buttons">
+        <button mat-stroked-button (click)="onClose()">Cerrar</button>
+        <button mat-flat-button color="primary" (click)="onSave()">Guardar</button>
+    </div>
+</div>
