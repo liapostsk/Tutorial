@@ -4,14 +4,14 @@
     <div class="filters">
         <form>
             <mat-form-field>
-                <mat-label>Nombre del juego</mat-label>
+                <mat-label>Título...</mat-label>
                 <mat-select disableRipple [(ngModel)]="filterGame" name="game">
                     <mat-option *ngFor="let game of games" [value]="game">{{game.title}}</mat-option>
                 </mat-select>
             </mat-form-field> 
 
             <mat-form-field>
-                <mat-label>Nombre del cliente</mat-label>
+                <mat-label>Cliente...</mat-label>
                 <mat-select disableRipple [(ngModel)]="filterClient" name="client">
                     <mat-option *ngFor="let client of clients" [value]="client">{{client.name}}</mat-option>
                 </mat-select>
@@ -47,7 +47,7 @@
         </ng-container>
 
         <ng-container matColumnDef="game">
-            <mat-header-cell *matHeaderCellDef> Nombre juego  </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> Nombre del juego  </mat-header-cell>
             <mat-cell *matCellDef="let element"> {{element.game.title}} </mat-cell>
         </ng-container>
 
@@ -57,12 +57,12 @@
         </ng-container>
 
         <ng-container matColumnDef="iniDate">
-            <mat-header-cell *matHeaderCellDef> Fecha inicio </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> Fecha de préstamo </mat-header-cell>
             <mat-cell *matCellDef="let element"> {{element.iniDate | date: 'dd/MM/yyyy'}} </mat-cell>
         </ng-container>
         
         <ng-container matColumnDef="endDate">
-            <mat-header-cell *matHeaderCellDef> Fecha fin </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> Fecha de devolución </mat-header-cell>
             <mat-cell *matCellDef="let element"> {{element.endDate | date: 'dd/MM/yyyy'}} </mat-cell>
         </ng-container>
 

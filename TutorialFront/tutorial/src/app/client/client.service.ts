@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Client } from './model/Client';
 import { HttpClient } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogConfirmationComponent } from 'src/app/core/dialog-confirmation/dialog-confirmation.component';
+import { DialogErrorComponent } from 'src/app/core/dialog-error/dialog-error.component';
 
 @Injectable({
   providedIn: 'root'

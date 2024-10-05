@@ -4,6 +4,7 @@ import com.ccsw.TutorialEntregable.prestamo.model.Prestamo;
 import com.ccsw.TutorialEntregable.prestamo.model.PrestamoDto;
 import com.ccsw.TutorialEntregable.prestamo.model.PrestamoSearchDto;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Date;
 
@@ -25,8 +26,9 @@ public interface PrestamoService {
      *
      * @param id PK de la entidad
      * @param dto datos de la entidad
+     * @return {@link ResponseEntity} con un mensaje y un código de estado HTTP
      */
-    void save(Long id, PrestamoDto dto);
+    ResponseEntity<String> save(Long id, PrestamoDto dto);
 
     /**
      * Método para crear o actualizar un {@link Prestamo}

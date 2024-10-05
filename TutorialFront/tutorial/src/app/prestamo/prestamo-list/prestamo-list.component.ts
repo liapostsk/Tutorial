@@ -11,6 +11,7 @@ import { Game } from 'src/app/game/model/Game';
 import { Client } from 'src/app/client/model/Client';
 import { ClientService } from 'src/app/client/client.service';
 import { GameService } from 'src/app/game/game.service';
+import { formatDate } from '@angular/common';
 
 @Component({
 selector: 'app-prestamo-list',
@@ -88,8 +89,8 @@ export class PrestamoListComponent implements OnInit {
 
         let nameGame = this.filterGame != null ? this.filterGame.title : null;
         let nameClient = this.filterClient != null ? this.filterClient.name : null;
-        let iniDate = this.filterIniDate ? this.filterIniDate : null;
-        let endDate = this.filterEndDate ? this.filterEndDate : null;
+        let iniDate = this.filterIniDate ? formatDate(this.filterIniDate, 'yyyy-MM-dd', 'en-US') : null;
+        let endDate = this.filterEndDate ? formatDate(this.filterEndDate, 'yyyy-MM-dd', 'en-US') : null;
 
         this.prestamoService.getPrestamos(pageable, nameGame, nameClient, iniDate, endDate).subscribe(data => {
             this.dataSource.data = data.content;

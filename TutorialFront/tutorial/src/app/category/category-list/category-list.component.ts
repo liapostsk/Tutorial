@@ -5,6 +5,7 @@ import { CategoryService } from '../category.service';
 import { MatDialog } from '@angular/material/dialog'; //permite abrir ventanas emergentes
 import { CategoryEditComponent } from '../category-edit/category-edit.component'; //Componente que se abre dentro de la ventana de dialogo
 import { DialogConfirmationComponent } from 'src/app/core/dialog-confirmation/dialog-confirmation.component';
+import { DialogErrorComponent } from 'src/app/core/dialog-error/dialog-error.component';
 
 @Component({
   selector: 'app-category-list',
@@ -48,20 +49,33 @@ export class CategoryListComponent implements OnInit {
     });
   }
 
-  //abre un dialogo para poder eliminar una categoria
   deleteCategory(category: Category) {    
     const dialogRef = this.dialog.open(DialogConfirmationComponent, {
-      data: { title: "Eliminar categoría", description: "Atención si borra la categoría se perderán sus datos.<br> ¿Desea eliminar la categoría?" }
+      data: { 
+        title: "Eliminar categoría", 
+        description: "Atención: si borra la categoría se perderán sus datos.<br> ¿Desea eliminar la categoría?" 
+      }
     });
-
+  
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.categoryService.deleteCategory(category.id).subscribe(result => {
-          this.ngOnInit();
-        }); 
+        this.categoryService.deleteCategory(category.id).subscribe({
+          next: () => {
+            this.ngOnInit(); // Recargar datos si la eliminación fue exitosa
+          },
+          error: (error) => {
+            this.dialog.open(DialogErrorComponent, {
+              data: {
+                title: "Error!",
+                description: "No se puede eliminar la categoría porque hay datos relacionados con ella."
+              }
+            });
+          }
+        });
       }
     });
   }
+  
 
   ngOnInit(): void { //Metodo que se llama automaticamente cuando un componente se inicializa
     //llamada al metodo get categories del servicio

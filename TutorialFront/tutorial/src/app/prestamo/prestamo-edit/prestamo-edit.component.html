@@ -2,7 +2,7 @@
     <h1 *ngIf="prestamo.id == null">Crear autor</h1>
     <h1 *ngIf="prestamo.id != null">Modificar autor</h1>
 
-    <form>
+    <form #form="ngForm">
         <mat-form-field>
             <mat-label>Identificador</mat-label>
             <input type="text" matInput placeholder="Identificador" [(ngModel)]="prestamo.id" name="id" disabled>
@@ -13,7 +13,7 @@
             <mat-select disableRipple [(ngModel)]="prestamo.game" name="game" required>
                 <mat-option *ngFor="let game of games" [value]="game">{{game.title}}</mat-option>
             </mat-select>
-            <mat-error>La categoría no puede estar vacía</mat-error>
+            <mat-error *ngIf="form.controls.game?.invalid && form.controls.game?.touched">La categoría no puede estar vacía</mat-error>
         </mat-form-field>
 
         <mat-form-field>
@@ -21,7 +21,7 @@
             <mat-select disableRipple [(ngModel)]="prestamo.client" name="client" required>
                 <mat-option *ngFor="let client of clients" [value]="client">{{client.name}}</mat-option>
             </mat-select>
-            <mat-error>El nombre del cliente no puede estar vacío</mat-error>
+            <mat-error *ngIf="form.controls.client?.invalid && form.controls.client?.touched">El nombre del cliente no puede estar vacío</mat-error>
         </mat-form-field>
 
         <mat-form-field>
@@ -29,7 +29,7 @@
             <input matInput [matDatepicker]="iniDatePicker" placeholder="Fecha Inicial" [(ngModel)]="prestamo.iniDate" name="iniDate" required>
             <mat-datepicker-toggle matSuffix [for]="iniDatePicker"></mat-datepicker-toggle>
             <mat-datepicker #iniDatePicker></mat-datepicker>
-            <mat-error>La fecha de inicio no puede estar vacía</mat-error>
+            <mat-error *ngIf="form.controls.iniDate?.invalid && form.controls.iniDate?.touched">La fecha de inicio no puede estar vacía</mat-error>
         </mat-form-field>
 
         <mat-form-field>
@@ -37,13 +37,13 @@
             <input matInput [matDatepicker]="endDatePicker" placeholder="Fecha Final" [(ngModel)]="prestamo.endDate" name="endDate" required>
             <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
             <mat-datepicker #endDatePicker></mat-datepicker>
-            <mat-error>La fecha de fin no puede estar vacía</mat-error>
+            <mat-error *ngIf="form.controls.endDate?.invalid && form.controls.endDate?.touched">La fecha de fin no puede estar vacía</mat-error>
         </mat-form-field>
 
     </form>
 
     <div class="buttons">
         <button mat-stroked-button (click)="onClose()">Cerrar</button>
-        <button mat-flat-button color="primary" (click)="onSave()">Guardar</button>
+        <button mat-flat-button color="primary" (click)="onSave()" [disabled]="form.invalid">Guardar</button>
     </div>
 </div>

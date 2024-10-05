@@ -9,6 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -43,7 +45,8 @@ public class PrestamoController {
     @Operation(summary = "Find Page with Filters", description = "Method that returns a page of filtered Prestamos")
     @RequestMapping(path = "", method = RequestMethod.POST)
     public Page<PrestamoDto> findPageWithFilters(@RequestParam(value = "nameGame", required = false) String nameGame, @RequestParam(value = "nameClient", required = false) String nameClient,
-            @RequestParam(value = "iniDate", required = false) Date iniDate, @RequestParam(value = "endDate", required = false) Date endDate, @RequestBody PrestamoSearchDto dto) {
+            @RequestParam(value = "iniDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date iniDate, @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+            @RequestBody PrestamoSearchDto dto) {
         // Llamada al servicio, se encarga de devolver una pagina filtrada
         Page<Prestamo> page = this.prestamoService.findPageWithFilters(nameGame, nameClient, iniDate, endDate, dto);
         // Hemos de devolver Page<PrestamoDto> traducimos para cada entity Prestamo a PrestamoDto
@@ -55,11 +58,12 @@ public class PrestamoController {
      *
      * @param id PK de la entidad
      * @param dto datos de la entidad
+     * @return {@link ResponseEntity} con el estado y mensaje correspondiente
      */
-    @Operation(summary = "Save or Update", description = "Method that saves or updates a Prestamo")
+    @Operation(summary = "Save", description = "Method that saves or updates a Prestamo")
     @RequestMapping(path = { "", "/{id}" }, method = RequestMethod.PUT)
-    public void save(@PathVariable(name = "id", required = false) Long id, @RequestBody PrestamoDto dto) {
-        this.prestamoService.save(id, dto);
+    public ResponseEntity<String> save(@PathVariable(name = "id", required = false) Long id, @RequestBody PrestamoDto dto) {
+        return this.prestamoService.save(id, dto);
     }
 
     /**

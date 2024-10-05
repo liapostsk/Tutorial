@@ -14,11 +14,12 @@ export class PrestamoService {
         private http: HttpClient
     ) { }
     
-    getPrestamos(pageable: Pageable, nameGame?: String, nameClient?: string, iniDate?: Date, endDate?: Date): Observable<PrestamoPage> {
+    getPrestamos(pageable: Pageable, nameGame?: String, nameClient?: string, iniDate?: string, endDate?: string): Observable<PrestamoPage> {
         // Componer la URL con los filtros
         const url = this.composeFindUrl(nameGame, nameClient, iniDate, endDate);
         
         // Realizar la solicitud POST con los parámetros de paginación en el body
+        console.log(url);
         return this.http.post<PrestamoPage>(url, { pageable: pageable });
     }
     
@@ -34,7 +35,7 @@ export class PrestamoService {
         return this.http.delete<void>('http://localhost:8080/prestamo/'+idPrestamo);
     }
     
-    private composeFindUrl(nameGame?: String, nameClient?: string, iniDate?: Date, endDate?: Date) : string {
+    private composeFindUrl(nameGame?: String, nameClient?: string, iniDate?: string, endDate?: string) : string {
         let params = '';
 
         if (nameGame != null) {

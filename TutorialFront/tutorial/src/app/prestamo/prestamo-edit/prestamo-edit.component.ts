@@ -6,6 +6,8 @@ import { Game } from 'src/app/game/model/Game';
 import { GameService } from 'src/app/game/game.service';
 import { Client } from 'src/app/client/model/Client';
 import { ClientService } from 'src/app/client/client.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogErrorComponent } from 'src/app/core/dialog-error/dialog-error.component';
 
 @Component({
 selector: 'app-prestamo-edit',
@@ -21,6 +23,7 @@ export class PrestamoEditComponent implements OnInit {
     constructor(
         public dialogRef: MatDialogRef<PrestamoEditComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
+        public dialog: MatDialog,
         private prestamoService: PrestamoService,
         private gameService: GameService,
         private clientService: ClientService
@@ -50,10 +53,24 @@ export class PrestamoEditComponent implements OnInit {
         this.prestamo.iniDate = new Date(this.prestamo.iniDate.getTime() - this.prestamo.iniDate.getTimezoneOffset() * 60000);
         this.prestamo.endDate = new Date(this.prestamo.endDate.getTime() - this.prestamo.endDate.getTimezoneOffset() * 60000);
 
-        this.prestamoService.savePrestamo(this.prestamo).subscribe(result =>  {
-            this.dialogRef.close();
+        this.prestamoService.savePrestamo(this.prestamo).subscribe({
+            next: (result) => {
+                this.dialogRef.close();
+            },
+            error: (error: any) => {
+                this.openErrorDialog(error.error.message || 'Error al guardar el préstamo.');
+            }
         }); 
-    }  
+    }
+
+    openErrorDialog(errorMessage: string) {
+        this.dialog.open(DialogErrorComponent, {
+            data: {
+                title: 'Error!',
+                description: errorMessage
+            }
+        });
+    }
 
     onClose() {
         this.dialogRef.close();

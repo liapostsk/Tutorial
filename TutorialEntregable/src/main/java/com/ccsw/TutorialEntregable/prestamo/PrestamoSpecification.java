@@ -32,7 +32,10 @@ public class PrestamoSpecification implements Specification<Prestamo> {
         } else if (criteria.getOperation().equalsIgnoreCase("between") && criteria.getValue() instanceof List) {
             // Filtrado por rango de fechas
             List<Date> dates = (List<Date>) criteria.getValue();
-            return builder.and(builder.greaterThanOrEqualTo(root.get("iniDate"), dates.get(0)), builder.lessThanOrEqualTo(root.get("endDate"), dates.get(1)));
+
+            return builder.and(builder.greaterThanOrEqualTo(root.get("iniDate"), dates.get(0)), // iniDate debe ser mayor o igual que la fecha de inicio
+                    builder.lessThanOrEqualTo(root.get("iniDate"), dates.get(1)) // iniDate debe ser menor o igual que la fecha de fin
+            );
         }
         return null;
     }

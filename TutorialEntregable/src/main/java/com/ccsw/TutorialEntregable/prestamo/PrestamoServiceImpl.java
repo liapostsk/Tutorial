@@ -11,6 +11,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -59,61 +61,68 @@ public class PrestamoServiceImpl implements PrestamoService {
         return !(start1.after(end2) || end1.before(start2));
     }
 
-    public void save(Long id, PrestamoDto data) {
+    public ResponseEntity<String> save(Long id, PrestamoDto data) {
         Prestamo prestamo;
         Date iniDate = data.getIniDate();
         Date endDate = data.getEndDate();
 
         long daysBetween = (endDate.getTime() - iniDate.getTime()) / (1000 * 60 * 60 * 24); // Calcular días entre fechas
 
-        //  1. iniDate < endDate
-        if (endDate.before(iniDate)) {
-            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio");
-        }
-
-        // 2. Dias de prestamo <= 14
-        if (daysBetween > 14) {
-            throw new IllegalArgumentException("El préstamo no puede superar los 14 días");
-        }
-
-        //  3. Dos clientes no pueden tener el mismo juego prestado en el mismo rango de fechas
-        // Recuperar todos los préstamos para las validaciones
-        Iterable<Prestamo> allPrestamos = prestamoRepository.findAll();
-
-        for (Prestamo p : allPrestamos) {
-            if (p.getGame().getId().equals(data.getGame().getId()) && datesOverlap(p.getIniDate(), p.getEndDate(), iniDate, endDate)) {
-                throw new IllegalArgumentException("El juego ya está prestado en ese rango de fechas a otro cliente.");
+        try {
+            // 1. Verificar que iniDate < endDate
+            if (endDate.before(iniDate)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La fecha de fin no puede ser anterior a la fecha de inicio");
             }
-        }
 
-        // 4. Validar que el mismo cliente no tenga más de 2 juegos prestados en el mismo rango de fechas
-        int prestamosDelCliente = 0;
-        for (Prestamo p : allPrestamos) {
-            Date pIniDate = p.getIniDate();
-            Date pEndDate = p.getEndDate();
-            if (p.getClient().getId().equals(data.getClient().getId()) && datesOverlap(pIniDate, pEndDate, iniDate, endDate)) {
-                prestamosDelCliente++;
-                if (prestamosDelCliente >= 2) {
-                    throw new IllegalArgumentException("El cliente ya tiene prestados 2 juegos en ese rango de fechas.");
+            // 2. Verificar que el préstamo no dure más de 14 días
+            if (daysBetween > 14) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El préstamo no puede superar los 14 días");
+            }
+
+            // 3. Verificar si el juego ya está prestado en el mismo rango de fechas
+            Iterable<Prestamo> allPrestamos = prestamoRepository.findAll();
+            for (Prestamo p : allPrestamos) {
+                if (p.getGame().getId().equals(data.getGame().getId()) && datesOverlap(p.getIniDate(), p.getEndDate(), iniDate, endDate)) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El juego ya está prestado en ese rango de fechas a otro cliente.");
                 }
             }
-        }
 
-        if (id == null) {
-            prestamo = new Prestamo();
-        } else {
-            prestamo = this.prestamoRepository.findById(id).orElse(null);
-        }
+            // 4. Verificar que el cliente no tenga más de 2 juegos prestados en el mismo rango de fechas
+            int prestamosDelCliente = 0;
+            for (Prestamo p : allPrestamos) {
+                if (p.getClient().getId().equals(data.getClient().getId()) && datesOverlap(p.getIniDate(), p.getEndDate(), iniDate, endDate)) {
+                    prestamosDelCliente++;
+                    if (prestamosDelCliente >= 2) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El cliente ya tiene prestados 2 juegos en ese rango de fechas.");
+                    }
+                }
+            }
 
-        BeanUtils.copyProperties(data, prestamo, "id", "game", "client");
-        prestamo.setGame(gameService.get(data.getGame().getId()));
-        prestamo.setClient(clientService.get(data.getClient().getId()));
-        this.prestamoRepository.save(prestamo);
+            // Si no hay errores, proceder a guardar el préstamo
+            if (id == null) {
+                prestamo = new Prestamo();
+            } else {
+                prestamo = this.prestamoRepository.findById(id).orElse(null);
+            }
+
+            BeanUtils.copyProperties(data, prestamo, "id", "game", "client");
+            prestamo.setGame(gameService.get(data.getGame().getId()));
+            prestamo.setClient(clientService.get(data.getClient().getId()));
+
+            this.prestamoRepository.save(prestamo);
+
+            // Devolver una respuesta exitosa
+            return ResponseEntity.status(HttpStatus.OK).body("Préstamo guardado exitosamente.");
+
+        } catch (Exception e) {
+            // Si ocurre una excepción no controlada, devolver un error genérico
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ocurrió un error al guardar el préstamo.");
+        }
     }
 
     public void delete(Long id) throws Exception {
         if (this.prestamoRepository.findById(id).orElse(null) == null) {
-            throw new Exception("No existe");
+            throw new Exception("El prestamo con este id noo existe");
         } else {
             this.prestamoRepository.deleteById(id);
         }

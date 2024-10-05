@@ -7,6 +7,7 @@ import { Pageable } from 'src/app/core/model/page/Pageable';
 import { AuthorEditComponent } from '../author-edit/author-edit.component';
 import { AuthorService } from '../author.service';
 import { Author } from '../model/Author';
+import { DialogErrorComponent } from 'src/app/core/dialog-error/dialog-error.component';
 
 @Component({
 selector: 'app-author-list',
@@ -78,15 +79,29 @@ export class AuthorListComponent implements OnInit {
 
     deleteAuthor(author: Author) {    
         const dialogRef = this.dialog.open(DialogConfirmationComponent, {
-            data: { title: "Eliminar autor", description: "Atención si borra el autor se perderán sus datos.<br> ¿Desea eliminar el autor?" }
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.authorService.deleteAuthor(author.id).subscribe(result =>  {
-                    this.ngOnInit();
-                }); 
+            data: { 
+                title: "Eliminar autor", 
+                description: "Atención: si borra el autor se perderán sus datos.<br> ¿Desea eliminar el autor?" 
             }
         });
-    }  
+    
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.authorService.deleteAuthor(author.id).subscribe({
+                    next: () => {
+                        this.ngOnInit(); // Recargar datos si la eliminación fue exitosa
+                    },
+                    error: (error) => {
+                        this.dialog.open(DialogErrorComponent, {
+                            data: {
+                                title: "Error!",
+                                description: "No se puede eliminar el autor porque hay datos relacionados con él."
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+     
 }
