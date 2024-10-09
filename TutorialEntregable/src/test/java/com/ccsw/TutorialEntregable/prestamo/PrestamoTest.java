@@ -1,11 +1,18 @@
 package com.ccsw.TutorialEntregable.prestamo;
 
+import com.ccsw.TutorialEntregable.client.ClientService;
+import com.ccsw.TutorialEntregable.client.model.Client;
+import com.ccsw.TutorialEntregable.client.model.ClientDto;
 import com.ccsw.TutorialEntregable.common.pagination.PageableRequest;
+import com.ccsw.TutorialEntregable.game.GameService;
+import com.ccsw.TutorialEntregable.game.model.Game;
+import com.ccsw.TutorialEntregable.game.model.GameDto;
 import com.ccsw.TutorialEntregable.prestamo.model.Prestamo;
 import com.ccsw.TutorialEntregable.prestamo.model.PrestamoDto;
 import com.ccsw.TutorialEntregable.prestamo.model.PrestamoSearchDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,6 +39,12 @@ public class PrestamoTest {
     @Mock
     private PrestamoRepository prestamoRepository;
 
+    @Mock
+    private GameService gameService;
+
+    @Mock
+    private ClientService clientService;
+
     @InjectMocks
     private PrestamoServiceImpl prestamoService;
 
@@ -46,8 +59,7 @@ public class PrestamoTest {
     public void findPageWithFiltersShouldReturnFilteredPrestamos() {
         // Creación de datos simulados: mocks
         List<Prestamo> list = new ArrayList<>();
-        Prestamo prestamo = new Prestamo();  // Se puede crear una instancia real o mockearla
-        list.add(prestamo);
+        list.add(mock(Prestamo.class));
 
         Page<Prestamo> prestamoPage = new PageImpl<>(list);
 
@@ -96,6 +108,59 @@ public class PrestamoTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("El préstamo no puede superar los 14 días.", ((java.util.Map) response.getBody()).get("error"));
+    }
+
+    @Test
+    public void saveShouldInsertPrestamoSuccessfully() throws ParseException {
+        // Configuración de las fechas para el préstamo
+        Date iniDate = format.parse("2024-09-20");
+        Date endDate = format.parse("2024-09-25");
+
+        // Crear un DTO para el préstamo
+        PrestamoDto prestamoDto = new PrestamoDto();
+        prestamoDto.setIniDate(iniDate);
+        prestamoDto.setEndDate(endDate);
+
+        GameDto gameDto = new GameDto();
+        gameDto.setId(1L);
+        prestamoDto.setGame(gameDto);
+
+        ClientDto clientDto = new ClientDto();
+        clientDto.setId(1L);
+        prestamoDto.setClient(clientDto);
+
+        Game game = mock(Game.class);
+        Client client = mock(Client.class);
+        //Comportamiento del mock al aplicarle getId
+        when(game.getId()).thenReturn(1L);
+        when(client.getId()).thenReturn(1L);
+
+        // Mockear los servicios
+        when(gameService.get(1L)).thenReturn(game);
+        when(clientService.get(1L)).thenReturn(client);
+
+        // Capturador para verificar que el préstamo se guarda correctamente
+        ArgumentCaptor<Prestamo> prestamoCaptor = ArgumentCaptor.forClass(Prestamo.class);
+
+        // Ejecutamos metodo save
+        ResponseEntity<?> response = prestamoService.save(null, prestamoDto);
+
+        // Verificar que el repositorio ha llamado al método save y captura el prestamo
+        verify(prestamoRepository).save(prestamoCaptor.capture());
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        // Verificar que el préstamo se haya guardado correctamente
+        Prestamo savedPrestamo = prestamoCaptor.getValue();
+        assertNotNull(savedPrestamo);
+        assertEquals(iniDate, savedPrestamo.getIniDate());
+        assertEquals(endDate, savedPrestamo.getEndDate());
+        assertEquals(1L, savedPrestamo.getGame().getId());
+        assertEquals(1L, savedPrestamo.getClient().getId());
+
+        // Verificar que el mensaje de éxito sea el correcto
+        assertNotNull(response.getBody());
+        assertEquals("Préstamo guardado exitosamente.", ((java.util.Map) response.getBody()).get("message"));
     }
 
     @Test

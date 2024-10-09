@@ -49,25 +49,23 @@ export class PrestamoEditComponent implements OnInit {
     }
 
     onSave() {
-        // Convertir a UTC si es necesario
+        // Convertir a UTC
         this.prestamo.iniDate = new Date(this.prestamo.iniDate.getTime() - this.prestamo.iniDate.getTimezoneOffset() * 60000);
         this.prestamo.endDate = new Date(this.prestamo.endDate.getTime() - this.prestamo.endDate.getTimezoneOffset() * 60000);
 
         this.prestamoService.savePrestamo(this.prestamo).subscribe({
             next: (result) => {
-                this.dialogRef.close();
+                console.log("Holaaaaaa");
+                this.onClose();
             },
-            error: (error: any) => {
-                this.openErrorDialog(error.error.message || 'Error al guardar el préstamo.');
-            }
-        }); 
-    }
-
-    openErrorDialog(errorMessage: string) {
-        this.dialog.open(DialogErrorComponent, {
-            data: {
-                title: 'Error!',
-                description: errorMessage
+            error: err => {
+                console.log("ADIOS");
+                this.dialog.open(DialogErrorComponent, {
+                    data: {
+                      title: 'Error!',
+                      description: err.error.error || "Error en guardar el préstamo."
+                    }
+                });
             }
         });
     }

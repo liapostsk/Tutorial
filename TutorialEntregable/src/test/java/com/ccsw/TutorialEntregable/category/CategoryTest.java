@@ -30,7 +30,6 @@ public class CategoryTest {
     @InjectMocks
     private CategoryServiceImpl categoryService; //simula el Service, la interficie
 
-    // Define el ID que usarás en el test de eliminación
     private static final Long EXISTS_CATEGORY_ID = 1L;
     public static final String CATEGORY_NAME = "CAT1";
 
@@ -39,10 +38,18 @@ public class CategoryTest {
     @Test
     public void getExistsCategoryIdShouldReturnCategory() {
 
+        /*
+        Nos permite simular el comportamiento de los metodos category sin acceder
+        a una BD o otros servicios externos
+         */
         Category category = mock(Category.class);
+
+        //Configura el comportamiento del mock al aplicarle getId
         when(category.getId()).thenReturn(EXISTS_CATEGORY_ID);
+        //Configura el repository para que al aplicarle findById retorne la categoria category
         when(categoryRepository.findById(EXISTS_CATEGORY_ID)).thenReturn(Optional.of(category));
 
+        //Invocacion del metodo get
         Category categoryResponse = categoryService.get(EXISTS_CATEGORY_ID);
 
         assertNotNull(categoryResponse);
@@ -84,12 +91,15 @@ public class CategoryTest {
 
     @Test
     public void saveNotExistsCategoryIdShouldInsert() {
-
+        /*
+        Se crea una CategoryDto porque es lo que se envia desde fuera hacia dentro,
+        de dentro hacia afuera nos devuelve una Entity (Category)
+         */
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setName(CATEGORY_NAME);
 
         /*
-            Como buscas guardar una nueva categoria, sabes que al guardarla esta sera una entity
+            Como buscas guardar una nueva categoria, sabes que al guardarla esto devuelve una entity
             ArgumentCaptor se usa para capturar un argumento de tipo Category. Esto posteriormente
             permitirá inspeccionar el objeto Category para ver si se ha hecho correctamente la insercion de sus valores
             al realizarse el "save"
@@ -99,7 +109,7 @@ public class CategoryTest {
         //se invoca al servicio interface y se hace el guardado id = null, porque es una nueva categoria
         categoryService.save(null, categoryDto);
 
-        //Se verifica si el metodo save del categoryRepository fue llamado con el argumento caoturado
+        //Se verifica si el metodo save del categoryRepository fue llamado. Además captura la entity categoria
         verify(categoryRepository).save(category.capture());
 
         //compara que el nombre de la categoria coincida con el de la categoria guardada

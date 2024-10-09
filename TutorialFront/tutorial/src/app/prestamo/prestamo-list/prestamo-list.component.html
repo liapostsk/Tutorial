@@ -1,5 +1,5 @@
 <div class="container">
-    <h1>Listado de Prestamos</h1>
+    <h1>Listado de Préstamos</h1>
 
     <div class="filters">
         <form>
@@ -52,7 +52,7 @@
         </ng-container>
 
         <ng-container matColumnDef="client">
-            <mat-header-cell *matHeaderCellDef> Nombre cliente  </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> Nombre del cliente  </mat-header-cell>
             <mat-cell *matCellDef="let element"> {{element.client.name}} </mat-cell>
         </ng-container>
 
@@ -82,6 +82,6 @@
     <mat-paginator (page)="loadPage($event)" [pageSizeOptions]="[5, 10, 20]" [pageIndex]="pageNumber" [pageSize]="pageSize" [length]="totalElements" showFirstLastButtons></mat-paginator>
 
     <div class="buttons">
-        <button mat-flat-button color="primary" (click)="createPrestamo()">Nuevo prestamo</button> 
+        <button mat-flat-button color="primary" (click)="createPrestamo()">Nuevo préstamo</button> 
     </div>   
 </div>

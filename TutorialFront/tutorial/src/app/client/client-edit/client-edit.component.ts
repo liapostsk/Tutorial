@@ -2,6 +2,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClientService } from '../client.service';
 import { Client } from '../model/Client';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogErrorComponent } from 'src/app/core/dialog-error/dialog-error.component';
 
 @Component({
   selector: 'app-client-edit',
@@ -16,6 +18,7 @@ export class ClientEditComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ClientEditComponent>, //Permite controlar el dialogo (abrir o cerrar)
     @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialog: MatDialog,
     private clientService: ClientService //Uso de metodos del servicio
   ) { }
 
@@ -32,9 +35,20 @@ export class ClientEditComponent implements OnInit {
   }
 
   onSave() {
-    this.clientService.saveClient(this.client).subscribe(result => {
-      this.dialogRef.close();
-    });    
+    this.clientService.saveClient(this.client).subscribe({
+      next: result => {
+        this.onClose();
+      },
+      error: err => {
+        this.dialog.open(DialogErrorComponent, {
+          data: {
+            title: 'Error!',
+            description: err.error.error
+          }
+        });
+      }
+      
+    });
   }  
 
   onClose() {

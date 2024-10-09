@@ -18,8 +18,7 @@ export class PrestamoService {
         // Componer la URL con los filtros
         const url = this.composeFindUrl(nameGame, nameClient, iniDate, endDate);
         
-        // Realizar la solicitud POST con los parámetros de paginación en el body
-        console.log(url);
+        // solicitud POST con los parámetros de paginación en el body
         return this.http.post<PrestamoPage>(url, { pageable: pageable });
     }
     

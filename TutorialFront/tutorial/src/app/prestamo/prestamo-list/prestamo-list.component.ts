@@ -97,11 +97,9 @@ export class PrestamoListComponent implements OnInit {
             this.pageNumber = data.pageable.pageNumber;
             this.pageSize = data.pageable.pageSize;
             this.totalElements = data.totalElements;
-            //prestamos => this.prestamos = prestamos;
         });
     }  
 
-    // NO TOCAR
     createPrestamo() {      
         const dialogRef = this.dialog.open(PrestamoEditComponent, {
             data: {}
@@ -114,7 +112,7 @@ export class PrestamoListComponent implements OnInit {
 
     deletePrestamo(prestamo: Prestamo) {    
         const dialogRef = this.dialog.open(DialogConfirmationComponent, {
-            data: { title: "Eliminar prestamo", description: "Atención si borra el prestamo se perderán sus datos.<br> ¿Desea eliminar el prestamo?" }
+            data: { title: "Eliminar préstamo", description: "Atención si borra el préstamo se perderán sus datos.<br> ¿Desea eliminar el préstamo?" }
         });
 
         dialogRef.afterClosed().subscribe(result => {
