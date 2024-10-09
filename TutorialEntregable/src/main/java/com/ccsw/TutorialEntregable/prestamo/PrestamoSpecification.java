@@ -37,6 +37,12 @@ public class PrestamoSpecification implements Specification<Prestamo> {
                     builder.lessThanOrEqualTo(root.get("iniDate"), dates.get(1)) // iniDate debe ser menor o igual que la fecha de fin
             );
         }
+        // Filtrado para fechas con operadores >= o <=
+        else if (criteria.getOperation().equalsIgnoreCase(">=") && criteria.getValue() instanceof Date) {
+            return builder.greaterThanOrEqualTo(root.get(criteria.getKey()), (Date) criteria.getValue());
+        } else if (criteria.getOperation().equalsIgnoreCase("<=") && criteria.getValue() instanceof Date) {
+            return builder.lessThanOrEqualTo(root.get(criteria.getKey()), (Date) criteria.getValue());
+        }
         return null;
     }
 

@@ -181,13 +181,16 @@ public class PrestamoIT {
     public void findByNonExistingGameNameShouldReturnEmpty() {
         int EXPECTED_COUNT = 0;
 
+        PrestamoSearchDto searchDto = new PrestamoSearchDto();
+        searchDto.setPageable(new PageableRequest(0, PAGE_SIZE));
+
         Map<String, Object> params = new HashMap<>();
         params.put(GAME_PARAM, NOT_EXISTING_GAME);
         params.put(CLIENT_PARAM, null);
         params.put(INI_DATE, null);
         params.put(END_DATE, null);
 
-        ResponseEntity<ResponsePage<PrestamoDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(new PrestamoSearchDto()), responseTypePage, params);
+        ResponseEntity<ResponsePage<PrestamoDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage, params);
 
         assertNotNull(response);
         assertEquals(EXPECTED_COUNT, response.getBody().getContent().size());
@@ -312,7 +315,7 @@ public class PrestamoIT {
         dto.setEndDate(endDate);
 
         ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, new HttpEntity<>(dto), Void.class);
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.ccsw.TutorialEntregable.client;
 
 import com.ccsw.TutorialEntregable.client.model.Client;
 import com.ccsw.TutorialEntregable.client.model.ClientDto;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -31,8 +32,9 @@ public interface ClientService {
      *
      * @param id PK de la entidad
      * @param dto datos de la entidad
+     * @return {@link ResponseEntity} con el estado y mensaje correspondiente
      */
-    void save(Long id, ClientDto dto);
+    ResponseEntity<?> save(Long id, ClientDto dto);
 
     /**
      * Método para borrar un cliente

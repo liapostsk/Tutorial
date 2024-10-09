@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class ClientController {
 
         /*
             Esto coge la lista clients y usa la funcion stream() que nos permite hacer cosas
-            sobre este objeto sin modificarlo, usamos adicionalmente .map() que lo que hace es mapear para elemento de
+            sobre este objeto sin modificarlo, usamos adicionalmente .map() que lo que hace es mapear para cada elemento de
             la lista (e como instancia de cada elemento lo convierte a DTO).
             Finalmente usamos .collect() metodo que finaliza el procesado del stream, define como recolectar los elementos del stream
             en este caso los colecta en una lista .toList().
@@ -58,12 +59,12 @@ public class ClientController {
      *
      * @param id PK de la entidad
      * @param dto datos de la entidad
+     * @return {@link ResponseEntity} con el estado y mensaje correspondiente
      */
     @Operation(summary = "Save or Update", description = "Method that saves or updates a Client")
     @RequestMapping(path = { "", "/{id}" }, method = RequestMethod.PUT)
-    public void save(@PathVariable(name = "id", required = false) Long id, @RequestBody ClientDto dto) {
-
-        this.clientService.save(id, dto);
+    public ResponseEntity<?> save(@PathVariable(name = "id", required = false) Long id, @RequestBody ClientDto dto) {
+        return this.clientService.save(id, dto);
     }
 
     /**

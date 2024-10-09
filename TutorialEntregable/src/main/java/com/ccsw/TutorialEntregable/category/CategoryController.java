@@ -42,7 +42,7 @@ public class CategoryController {
 
         /*
             Esto coge la lista categories y usa la funcion stream() que nos permite hacer cosas
-            sobre este objeto sin modificarlo, usamos adicionalmente .map() que lo que hace es mapear para elemento de
+            sobre este objeto sin modificarlo, usamos adicionalmente .map() que lo que hace es mapear para cada elemento de
             la lista (e como instancia de cada elemento lo convierte a DTO).
             Finalmente usamos .collect() metodo que finaliza el procesado del stream, define como recolectar los elementos del stream
             en este caso los colecta en una lista .toList().

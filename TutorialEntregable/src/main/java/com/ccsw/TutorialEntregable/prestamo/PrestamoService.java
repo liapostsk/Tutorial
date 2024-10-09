@@ -28,7 +28,7 @@ public interface PrestamoService {
      * @param dto datos de la entidad
      * @return {@link ResponseEntity} con un mensaje y un código de estado HTTP
      */
-    ResponseEntity<String> save(Long id, PrestamoDto dto);
+    ResponseEntity<?> save(Long id, PrestamoDto dto);
 
     /**
      * Método para crear o actualizar un {@link Prestamo}

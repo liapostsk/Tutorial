@@ -8,6 +8,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,7 @@ public class ClientTest {
     public static final String EXISTING_CLIENT_NAME = "Lia";
 
     @Test
-    public void getExistsAuthorIdShouldReturnAuthor() {
+    public void getExistsClientIdShouldReturnClient() {
 
         Client client = mock(Client.class);
         when(client.getId()).thenReturn(EXISTS_CLIENT_ID);
@@ -108,7 +110,7 @@ public class ClientTest {
     }
 
     @Test
-    public void saveClientWithExtingNameClientIdShouldException() {
+    public void saveClientWithExistingNameClientIdShouldException() {
 
         ClientDto clientDto = new ClientDto();
         clientDto.setName(EXISTING_CLIENT_NAME);
@@ -118,9 +120,10 @@ public class ClientTest {
 
         when(clientRepository.findByName(EXISTING_CLIENT_NAME)).thenReturn(Optional.of(existingClient));
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            clientService.save(null, clientDto);
-        });
+        ResponseEntity<?> response = clientService.save(null, clientDto);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Ya existe un cliente con el nombre: " + EXISTING_CLIENT_NAME, ((java.util.Map) response.getBody()).get("error"));
     }
 
     // Pruebas de borrado

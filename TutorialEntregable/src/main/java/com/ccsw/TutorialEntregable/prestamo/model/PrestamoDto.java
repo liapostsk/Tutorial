@@ -5,10 +5,6 @@ import com.ccsw.TutorialEntregable.game.model.GameDto;
 
 import java.util.Date;
 
-/**
- * @author ccsw
- *
- */
 public class PrestamoDto {
 
     private Long id;

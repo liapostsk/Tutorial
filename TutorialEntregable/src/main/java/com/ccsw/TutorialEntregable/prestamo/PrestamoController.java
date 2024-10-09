@@ -62,7 +62,7 @@ public class PrestamoController {
      */
     @Operation(summary = "Save", description = "Method that saves or updates a Prestamo")
     @RequestMapping(path = { "", "/{id}" }, method = RequestMethod.PUT)
-    public ResponseEntity<String> save(@PathVariable(name = "id", required = false) Long id, @RequestBody PrestamoDto dto) {
+    public ResponseEntity<?> save(@PathVariable(name = "id", required = false) Long id, @RequestBody PrestamoDto dto) {
         return this.prestamoService.save(id, dto);
     }
 

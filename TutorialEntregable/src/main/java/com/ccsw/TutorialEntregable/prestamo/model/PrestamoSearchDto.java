@@ -2,10 +2,6 @@ package com.ccsw.TutorialEntregable.prestamo.model;
 
 import com.ccsw.TutorialEntregable.common.pagination.PageableRequest;
 
-/**
- * @author ccsw
- *
- */
 public class PrestamoSearchDto {
 
     private PageableRequest pageable;

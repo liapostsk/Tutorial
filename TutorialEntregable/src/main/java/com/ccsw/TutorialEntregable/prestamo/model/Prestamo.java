@@ -32,8 +32,6 @@ public class Prestamo {
     @Column(name = "end_date", nullable = false)
     private Date endDate;
 
-    // Getters y setters
-
     public Long getId() {
         return this.id;
     }
